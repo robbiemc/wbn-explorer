@@ -96,6 +96,7 @@ function onClick() {
       v-if="isFolder && isExpanded"
       :nodes="node.children as TreeNode[]"
       :indent="(indent || 0) + 1"
+      @node-selected="(id) => emit('nodeSelected', id)"
     ></Tree>
   </li>
 </template>

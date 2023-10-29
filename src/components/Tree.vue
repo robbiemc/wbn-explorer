@@ -2,24 +2,29 @@
 import TreeNode from './TreeNode.vue';
 
 export type TreeNode = {
-  id: string,
-  name: string,
-  noIcon: boolean,
-  children?: TreeNode[],
+  id: string;
+  name: string;
+  noIcon: boolean;
+  children?: TreeNode[];
 };
 
 defineProps<{
-  nodes: TreeNode[],
-  indent?: number,
+  nodes: TreeNode[];
+  indent?: number;
 }>();
 
-defineEmits<{
-  (e: 'nodeSelected', id: string): void,
+const emit = defineEmits<{
+  (e: 'nodeSelected', id: string): void;
 }>();
 </script>
 
 <template>
   <ul>
-    <TreeNode v-for="node in nodes" :node="node" :indent="indent"></TreeNode>
+    <TreeNode
+      v-for="node in nodes"
+      :node="node"
+      :indent="indent"
+      @node-selected="(id) => emit('nodeSelected', id)"
+    ></TreeNode>
   </ul>
 </template>
