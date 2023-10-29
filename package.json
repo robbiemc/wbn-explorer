@@ -16,6 +16,7 @@
     "whatwg-url": "^13.0.0"
   },
   "devDependencies": {
+    "@types/whatwg-url": "^11.0.2",
     "@vitejs/plugin-vue": "^4.2.3",
     "autoprefixer": "^10.4.16",
     "postcss": "^8.4.31",

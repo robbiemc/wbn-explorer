@@ -20,7 +20,8 @@ const isFolder = computed(() => props.node.children !== undefined);
 function onClick() {
   if (isFolder.value) {
     isExpanded.value = !isExpanded.value;
-  } else {
+  }
+  if (props.node.id !== undefined) {
     emit('nodeSelected', props.node.id);
   }
 }

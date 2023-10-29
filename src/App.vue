@@ -70,7 +70,7 @@ function unmapTreeNode(mapped: MappedTreeNode): TreeNode[] {
   for (const [name, child] of Object.entries(mapped.children || {})) {
     const node: TreeNode = {
       name,
-      id: child.id || 'none',
+      id: child.id,
     };
     if (child.children !== undefined) {
       node.children = unmapTreeNode(child);

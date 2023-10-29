@@ -3,7 +3,7 @@ import TreeNode from './TreeNode.vue';
 
 export type TreeNode = {
   name: string;
-  id: string;
+  id?: string;
   noIcon?: boolean;
   children?: TreeNode[];
 };
