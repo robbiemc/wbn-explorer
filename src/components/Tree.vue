@@ -2,9 +2,9 @@
 import TreeNode from './TreeNode.vue';
 
 export type TreeNode = {
-  id: string;
   name: string;
-  noIcon: boolean;
+  id: string;
+  noIcon?: boolean;
   children?: TreeNode[];
 };
 

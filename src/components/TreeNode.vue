@@ -28,7 +28,10 @@ function onClick() {
 
 <template>
   <li>
-    <div @click="onClick" class="rounded hover:bg-slate-700 cursor-pointer">
+    <div
+      @click="onClick"
+      class="whitespace-nowrap rounded hover:bg-slate-700 cursor-pointer"
+    >
       <span
         class="inline-block"
         :style="`width: ${(indent || 0) * 0.75}rem`"
