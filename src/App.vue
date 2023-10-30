@@ -100,6 +100,7 @@ function onNodeSelected(id: string) {
         <Tree
           v-if="bundleTree !== null"
           :nodes="bundleTree"
+          :expanded="true"
           @node-selected="onNodeSelected"
         ></Tree>
       </aside>

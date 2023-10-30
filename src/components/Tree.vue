@@ -10,6 +10,7 @@ export type TreeNode = {
 
 defineProps<{
   nodes: TreeNode[];
+  expanded?: boolean;
   indent?: number;
 }>();
 
@@ -23,6 +24,7 @@ const emit = defineEmits<{
     <TreeNode
       v-for="node in nodes"
       :node="node"
+      :expanded="expanded"
       :indent="indent"
       @node-selected="(id) => emit('nodeSelected', id)"
     ></TreeNode>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, toRef } from 'vue';
 import { TreeNode } from './Tree.vue';
 import Tree from './Tree.vue';
 
@@ -7,6 +7,7 @@ import Tree from './Tree.vue';
 
 const props = defineProps<{
   node: TreeNode;
+  expanded?: boolean;
   indent?: number;
 }>();
 
@@ -14,23 +15,14 @@ const emit = defineEmits<{
   (e: 'nodeSelected', id: string): void;
 }>();
 
-const isExpanded = ref(false);
+const isExpanded = toRef(props.expanded || false);
 const isFolder = computed(() => props.node.children !== undefined);
-
-function onClick() {
-  if (isFolder.value) {
-    // isExpanded.value = !isExpanded.value;
-  }
-  if (props.node.id !== undefined) {
-    emit('nodeSelected', props.node.id);
-  }
-}
 </script>
 
 <template>
   <li>
     <div
-      @click="onClick"
+      @click="props.node.id && emit('nodeSelected', props.node.id)"
       class="flex gap-2 items-stretch whitespace-nowrap rounded border border-transparent"
       :class="
         node.id
@@ -101,10 +93,12 @@ function onClick() {
 
       <span class="py-1">{{ node.name }}</span>
     </div>
+
     <Tree
       v-if="isFolder"
       v-show="isExpanded"
       :nodes="node.children as TreeNode[]"
+      :expanded="expanded"
       :indent="(indent || 0) + 1"
       @node-selected="(id) => emit('nodeSelected', id)"
     ></Tree>
