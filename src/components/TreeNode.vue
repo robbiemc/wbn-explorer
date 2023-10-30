@@ -24,18 +24,21 @@ const isFolder = computed(() => props.node.children !== undefined);
   <li>
     <div
       @click="props.node.id && emit('nodeSelected', props.node.id)"
-      class="flex gap-2 items-stretch whitespace-nowrap rounded border border-transparent"
+      class="flex gap-2 items-stretch rounded border border-transparent"
       :class="
         node.id
           ? 'text-white hover:bg-slate-600 cursor-pointer'
           : 'text-gray-400 hover:border-slate-500 cursor-default'
       "
     >
-      <span :style="`width: ${(indent || 0) * 0.75}rem`"></span>
+      <span
+        class="flex-shrink-0"
+        :style="`width: ${(indent || 0) * 0.75}rem`"
+      ></span>
 
       <!-- Folder arrow -->
       <span
-        class="flex items-center justify-center w-5 mr-1 cursor-pointer"
+        class="flex-shrink-0 flex items-center justify-center w-5 mr-1 cursor-pointer"
         :class="{ 'hover:bg-slate-500': isFolder }"
         @click.stop="isExpanded = !isExpanded"
       >
@@ -59,10 +62,10 @@ const isFolder = computed(() => props.node.children !== undefined);
       </span>
 
       <!-- Icon -->
-      <span v-if="node.noIcon" class="inline-block w-4"></span>
+      <span v-if="node.noIcon" class="flex-shrink-0 inline-block w-4"></span>
       <svg
         v-else-if="isFolder"
-        class="inline w-4 text-gray-800 dark:text-white"
+        class="flex-shrink-0 inline w-4 text-gray-800 dark:text-white"
         aria-hidden="true"
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
@@ -78,7 +81,7 @@ const isFolder = computed(() => props.node.children !== undefined);
       </svg>
       <svg
         v-else
-        class="inline-block w-4 text-gray-800 dark:text-white"
+        class="flex-shrink-0 inline-block w-4 text-gray-800 dark:text-white"
         aria-hidden="true"
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
@@ -92,7 +95,10 @@ const isFolder = computed(() => props.node.children !== undefined);
         />
       </svg>
 
-      <span class="py-1" :class="{ 'font-bold': selected === node.id }">
+      <span
+        class="py-1 whitespace-nowrap overflow-hidden overflow-ellipsis"
+        :class="{ 'font-bold': selected === node.id }"
+      >
         {{ node.name }}
       </span>
     </div>
