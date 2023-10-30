@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import { URL as URL2 } from 'whatwg-url';
+import { basicURLParse, serializeURL } from 'whatwg-url';
 
 import { BundleReader, WebBundle } from './BundleReader';
 import BundleChooser from './components/BundleChooser.vue';
@@ -38,26 +38,31 @@ const bundleTree = computed(() => {
 
   const mappedTree: MappedTreeNode = {};
   for (const url of bundle.value.contents.urls) {
-    // TODO: Explain URL2 here
-    const parsedUrl = new URL2(url, 'http://invalid') as URL;
-    const pathParts = parsedUrl.pathname.split('/');
-    // TODO: origin doesn't exist for non-standard schemes
-    pathParts[0] = parsedUrl.hostname === 'invalid' ? '/' : parsedUrl.origin;
+    const urlRecord = basicURLParse(url, { baseURL: 'http://invalid' });
+    const pathParts = Array.from(urlRecord.path);
+    urlRecord.path = [];
+    // TODO: somehow support queries - maybe treat as folder contents?
+    urlRecord.query = null;
+    pathParts.unshift(
+      urlRecord.host === undefined
+        ? '/'
+        : serializeURL(urlRecord, /*excludeFragments=*/ true),
+    );
     if (pathParts.slice(-1)[0] === '') {
       pathParts.pop();
     }
 
     let parent = mappedTree;
-    for (; pathParts.length > 0; pathParts.shift()) {
+    while (pathParts.length > 0) {
       if (parent.children === undefined) {
         parent.children = {};
       }
-      const partName = pathParts[0];
+      const partName = pathParts.shift() as string;
       if (!(partName in parent.children)) {
         parent.children[partName] = {};
       }
       const child = parent.children[partName];
-      if (pathParts.length === 1) {
+      if (pathParts.length === 0) {
         child.id = url;
       }
       parent = child;
@@ -81,7 +86,7 @@ function unmapTreeNode(mapped: MappedTreeNode): TreeNode[] {
   nodes.sort((a, b) => {
     // Folders first
     if ((a.children === undefined) !== (b.children === undefined)) {
-      return (a.children === undefined) ? 1 : -1;
+      return a.children === undefined ? 1 : -1;
     }
     return a.name.localeCompare(b.name);
   });
