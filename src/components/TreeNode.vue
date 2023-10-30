@@ -19,7 +19,7 @@ const isFolder = computed(() => props.node.children !== undefined);
 
 function onClick() {
   if (isFolder.value) {
-    isExpanded.value = !isExpanded.value;
+    // isExpanded.value = !isExpanded.value;
   }
   if (props.node.id !== undefined) {
     emit('nodeSelected', props.node.id);
@@ -31,19 +31,20 @@ function onClick() {
   <li>
     <div
       @click="onClick"
-      class="whitespace-nowrap rounded hover:bg-slate-700 cursor-pointer"
+      class="flex gap-2 items-stretch whitespace-nowrap rounded hover:bg-slate-700 cursor-pointer"
     >
-      <span
-        class="inline-block"
-        :style="`width: ${(indent || 0) * 0.75}rem`"
-      ></span>
+      <span :style="`width: ${(indent || 0) * 0.75}rem`"></span>
 
-      <span class="inline-block p-1">
-        <!-- Folder arrow -->
+      <!-- Folder arrow -->
+      <span
+        class="flex items-center justify-center w-5 mr-1"
+        :class="{ 'hover:bg-slate-500': isFolder }"
+        @click.stop="isExpanded = !isExpanded"
+      >
         <svg
           v-if="isFolder"
           :class="{ 'rotate-90': isExpanded }"
-          class="inline-block mr-2 w-3 h-3 text-gray-800 dark:text-white"
+          class="inline w-3 h-3 text-gray-800 dark:text-white"
           aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -57,47 +58,47 @@ function onClick() {
             d="m1 9 4-4-4-4"
           />
         </svg>
-        <span v-else class="inline-block mr-2 w-3"></span>
-
-        <!-- Icon -->
-        <span v-if="node.noIcon" class="inline-block w-4"></span>
-        <svg
-          v-else-if="isFolder"
-          class="inline-block w-4 h-4 text-gray-800 dark:text-white"
-          aria-hidden="true"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 18 18"
-        >
-          <path
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M1 5v11a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1H1Zm0 0V2a1 1 0 0 1 1-1h5.443a1 1 0 0 1 .8.4l2.7 3.6H1Z"
-          />
-        </svg>
-        <svg
-          v-else
-          class="inline-block w-4 h-4 text-gray-800 dark:text-white"
-          aria-hidden="true"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 16 20"
-        >
-          <path
-            stroke="currentColor"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M6 1v4a1 1 0 0 1-1 1H1m14-4v16a.97.97 0 0 1-.933 1H1.933A.97.97 0 0 1 1 18V5.828a2 2 0 0 1 .586-1.414l2.828-2.828A2 2 0 0 1 5.828 1h8.239A.97.97 0 0 1 15 2Z"
-          />
-        </svg>
-
-        {{ node.name }}
       </span>
+
+      <!-- Icon -->
+      <span v-if="node.noIcon" class="inline-block w-4"></span>
+      <svg
+        v-else-if="isFolder"
+        class="inline w-4 text-gray-800 dark:text-white"
+        aria-hidden="true"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 18 18"
+      >
+        <path
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M1 5v11a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1H1Zm0 0V2a1 1 0 0 1 1-1h5.443a1 1 0 0 1 .8.4l2.7 3.6H1Z"
+        />
+      </svg>
+      <svg
+        v-else
+        class="inline-block w-4 text-gray-800 dark:text-white"
+        aria-hidden="true"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 16 20"
+      >
+        <path
+          stroke="currentColor"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M6 1v4a1 1 0 0 1-1 1H1m14-4v16a.97.97 0 0 1-.933 1H1.933A.97.97 0 0 1 1 18V5.828a2 2 0 0 1 .586-1.414l2.828-2.828A2 2 0 0 1 5.828 1h8.239A.97.97 0 0 1 15 2Z"
+        />
+      </svg>
+
+      <span class="py-1">{{ node.name }}</span>
     </div>
     <Tree
-      v-if="isFolder && isExpanded"
+      v-if="isFolder"
+      v-show="isExpanded"
       :nodes="node.children as TreeNode[]"
       :indent="(indent || 0) + 1"
       @node-selected="(id) => emit('nodeSelected', id)"
