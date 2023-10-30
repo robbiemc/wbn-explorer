@@ -31,13 +31,18 @@ function onClick() {
   <li>
     <div
       @click="onClick"
-      class="flex gap-2 items-stretch whitespace-nowrap rounded hover:bg-slate-700 cursor-pointer"
+      class="flex gap-2 items-stretch whitespace-nowrap rounded border border-transparent"
+      :class="
+        node.id
+          ? 'text-white hover:bg-slate-600 cursor-pointer'
+          : 'text-gray-400 hover:border-slate-500 cursor-default'
+      "
     >
       <span :style="`width: ${(indent || 0) * 0.75}rem`"></span>
 
       <!-- Folder arrow -->
       <span
-        class="flex items-center justify-center w-5 mr-1"
+        class="flex items-center justify-center w-5 mr-1 cursor-pointer"
         :class="{ 'hover:bg-slate-500': isFolder }"
         @click.stop="isExpanded = !isExpanded"
       >
