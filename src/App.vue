@@ -7,19 +7,20 @@ import BundleChooser from './components/BundleChooser.vue';
 import { TreeNode } from './components/Tree.vue';
 import Tree from './components/Tree.vue';
 
-const bundleFile = ref<File | null>(null);
-const bundle = ref<WebBundle | null>(null);
+const bundleFile = ref<File | undefined>();
+const bundle = ref<WebBundle | undefined>();
+const selected = ref<string | undefined>();
 
 watch(bundleFile, async () => {
-  if (bundleFile.value === null) {
-    bundle.value = null;
+  if (bundleFile.value === undefined) {
+    bundle.value = undefined;
     return;
   }
   const reader = new BundleReader(bundleFile.value);
   const readResult = await reader.read();
   if (typeof readResult === 'string') {
     // TODO: handle errors
-    bundle.value = null;
+    bundle.value = undefined;
     return;
   }
   bundle.value = readResult;
@@ -31,8 +32,8 @@ type MappedTreeNode = {
 };
 
 const bundleTree = computed(() => {
-  if (bundle.value === null) {
-    return null;
+  if (bundle.value === undefined) {
+    return undefined;
   }
 
   const mappedTree: MappedTreeNode = {};
@@ -89,6 +90,7 @@ function unmapTreeNode(mapped: MappedTreeNode): TreeNode[] {
 
 function onNodeSelected(id: string) {
   console.log('NodeSelected', id);
+  selected.value = id;
 }
 </script>
 
@@ -98,8 +100,9 @@ function onNodeSelected(id: string) {
     <div class="p-4 flex flex-row flex-wrap">
       <aside class="w-full sm:w-1/3 md:w-1/4 sticky">
         <Tree
-          v-if="bundleTree !== null"
+          v-if="bundleTree !== undefined"
           :nodes="bundleTree"
+          :selected="selected"
           :expanded="true"
           @node-selected="onNodeSelected"
         ></Tree>

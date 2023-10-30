@@ -7,6 +7,7 @@ import Tree from './Tree.vue';
 
 const props = defineProps<{
   node: TreeNode;
+  selected?: string;
   expanded?: boolean;
   indent?: number;
 }>();
@@ -91,13 +92,16 @@ const isFolder = computed(() => props.node.children !== undefined);
         />
       </svg>
 
-      <span class="py-1">{{ node.name }}</span>
+      <span class="py-1" :class="{ 'font-bold': selected === node.id }">
+        {{ node.name }}
+      </span>
     </div>
 
     <Tree
       v-if="isFolder"
       v-show="isExpanded"
       :nodes="node.children as TreeNode[]"
+      :selected="selected"
       :expanded="expanded"
       :indent="(indent || 0) + 1"
       @node-selected="(id) => emit('nodeSelected', id)"
