@@ -40,17 +40,19 @@ const bundleTree = computed(() => {
   for (const url of bundle.value.contents.urls) {
     const urlRecord = basicURLParse(url, { baseURL: 'http://invalid' });
     const pathParts = Array.from(urlRecord.path);
+    if (pathParts.slice(-1)[0] === '') {
+      pathParts.pop();
+    }
+    if (urlRecord.query !== null) {
+      pathParts.push(`?${urlRecord.query}`);
+    }
     urlRecord.path = [];
-    // TODO: somehow support queries - maybe treat as folder contents?
     urlRecord.query = null;
     pathParts.unshift(
       urlRecord.host === undefined
         ? '/'
         : serializeURL(urlRecord, /*excludeFragments=*/ true),
     );
-    if (pathParts.slice(-1)[0] === '') {
-      pathParts.pop();
-    }
 
     let parent = mappedTree;
     while (pathParts.length > 0) {
