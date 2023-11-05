@@ -97,7 +97,7 @@ const isFolder = computed(() => props.node.children !== undefined);
 
       <span
         class="py-1 whitespace-nowrap overflow-hidden overflow-ellipsis"
-        :class="{ 'font-bold': selected === node.id }"
+        :class="{ 'font-bold': selected !== undefined && selected === node.id }"
       >
         {{ node.name }}
       </span>

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import { basicURLParse, serializeURL } from 'whatwg-url';
 
 import { BundleReader, WebBundle } from './BundleReader';
 import BundleChooser from './components/BundleChooser.vue';
+import ResourceInfo from './components/ResourceInfo.vue';
 import { TreeNode } from './components/Tree.vue';
 import Tree from './components/Tree.vue';
 
@@ -12,6 +12,7 @@ const bundle = ref<WebBundle | undefined>();
 const selected = ref<string | undefined>();
 
 watch(bundleFile, async () => {
+  selected.value = undefined;
   if (bundleFile.value === undefined) {
     bundle.value = undefined;
     return;
@@ -37,22 +38,12 @@ const bundleTree = computed(() => {
   }
 
   const mappedTree: MappedTreeNode = {};
-  for (const url of bundle.value.contents.urls) {
-    const urlRecord = basicURLParse(url, { baseURL: 'http://invalid' });
-    const pathParts = Array.from(urlRecord.path);
-    if (pathParts.slice(-1)[0] === '') {
-      pathParts.pop();
+  for (const [id, metadata] of Object.entries(bundle.value.index)) {
+    const pathParts = [...metadata.pathParts];
+    if (metadata.query !== undefined) {
+      pathParts.push(metadata.query); // already has a '?' prefix
     }
-    if (urlRecord.query !== null) {
-      pathParts.push(`?${urlRecord.query}`);
-    }
-    urlRecord.path = [];
-    urlRecord.query = null;
-    pathParts.unshift(
-      urlRecord.host === undefined
-        ? '/'
-        : serializeURL(urlRecord, /*excludeFragments=*/ true),
-    );
+    pathParts.unshift(metadata.origin === undefined ? '/' : metadata.origin);
 
     let parent = mappedTree;
     while (pathParts.length > 0) {
@@ -65,7 +56,7 @@ const bundleTree = computed(() => {
       }
       const child = parent.children[partName];
       if (pathParts.length === 0) {
-        child.id = url;
+        child.id = id;
       }
       parent = child;
     }
@@ -102,20 +93,34 @@ function onNodeSelected(id: string) {
 </script>
 
 <template>
-  <div class="container mx-auto">
-    <div class="p-4 text-2xl font-bold">Web Bundle Explorer</div>
-    <div class="p-4 flex flex-row flex-wrap">
-      <aside class="w-full sm:w-1/3 md:w-1/4 sticky">
-        <Tree
-          v-if="bundleTree !== undefined"
-          :nodes="bundleTree"
-          :selected="selected"
-          :expanded="true"
-          @node-selected="onNodeSelected"
-        ></Tree>
+  <div class="container min-h-screen mx-auto">
+    <h1 class="px-3 py-2 text-2xl font-bold">Web Bundle Explorer</h1>
+    <div class="flex flex-row">
+      <aside class="px-3 py-2 w-full sm:w-1/3 lg:w-1/4">
+        <h2 v-if="bundle !== undefined">{{bundle.filename}}</h2>
+        <div class="">
+          <Tree
+            v-if="bundleTree !== undefined"
+            :nodes="bundleTree"
+            :selected="selected"
+            :expanded="true"
+            @node-selected="onNodeSelected"
+          ></Tree>
+        </div>
       </aside>
-      <main class="w-full sm:w-2/3 md:w-3/4">
-        <BundleChooser v-model:bundle-file="bundleFile"></BundleChooser>
+      <main class="px-3 py-2 w-full sm:w-2/3 lg:w-3/4">
+        <h2>Selected file path</h2>
+        <div class="">
+          <ResourceInfo
+            v-if="bundle !== undefined && selected !== undefined"
+            :bundle="bundle"
+            :url="selected"
+          ></ResourceInfo>
+          <BundleChooser
+            v-else
+            v-model:bundle-file="bundleFile"
+          ></BundleChooser>
+        </div>
       </main>
     </div>
   </div>
