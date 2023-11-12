@@ -6,6 +6,7 @@ import { treeifyBundle } from './treeify-bundle';
 
 import DropTarget from './components/DropTarget.vue';
 import ResourceInfo from './components/ResourceInfo.vue';
+import SvgIcon from './components/SvgIcon.vue';
 import Tree from './components/Tree.vue';
 
 const bundleTypes = ['.wbn', '.swbn'];
@@ -66,21 +67,7 @@ const bundleTree = computed(() => {
           class="p-1 flex gap-1 items-stretch border-b dark:border-slate-600"
         >
           <label class="flex px-1 rounded hover:bg-slate-500 cursor-pointer">
-            <svg
-              class="inline w-4 text-gray-800 dark:text-white"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 21 18"
-            >
-              <path
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M2.539 17h12.476l4-9H5m-2.461 9a1 1 0 0 1-.914-1.406L5 8m-2.461 9H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.443a1 1 0 0 1 .8.4l2.7 3.6H16a1 1 0 0 1 1 1v2H5"
-              />
-            </svg>
+            <SvgIcon class="inline w-4" type="folder_open"></SvgIcon>
             <input
               class="hidden"
               type="file"
@@ -100,42 +87,14 @@ const bundleTree = computed(() => {
             class="flex px-1 rounded hover:bg-slate-500"
             @click="expandTree = true"
           >
-            <svg
-              class="inline w-4 text-gray-800 dark:text-white"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 18 18"
-            >
-              <path
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 1v16M1 9h16"
-              />
-            </svg>
+            <SvgIcon class="inline w-4" type="plus"></SvgIcon>
           </button>
           <button
             v-if="bundle !== undefined"
             class="flex px-1 rounded hover:bg-slate-500"
             @click="expandTree = false"
           >
-            <svg
-              class="inline w-4 text-gray-800 dark:text-white"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 18 2"
-            >
-              <path
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M1 1h16"
-              />
-            </svg>
+            <SvgIcon class="inline w-4" type="minus"></SvgIcon>
           </button>
         </div>
         <DropTarget
