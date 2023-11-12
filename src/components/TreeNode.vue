@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, toRef } from 'vue';
+import { computed, toRef, watch } from 'vue';
 import { TreeNode } from './Tree.vue';
 import Tree from './Tree.vue';
 
@@ -16,8 +16,17 @@ const emit = defineEmits<{
   (e: 'nodeSelected', id: string): void;
 }>();
 
-const isExpanded = toRef(props.expanded || false);
+const isExpanded = toRef(false);
 const isFolder = computed(() => props.node.children !== undefined);
+
+const expandedProp = computed(() => props.expanded);
+watch(
+  expandedProp,
+  (expanded) => {
+    isExpanded.value = expanded;
+  },
+  { immediate: true },
+);
 </script>
 
 <template>
