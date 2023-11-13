@@ -23,21 +23,34 @@ const contentType = computed<string | undefined>(() => {
   return Object.fromEntries(lowered)['content-type'];
 });
 
-function createLink() {
+function isText(contentType: string) {
+  return (
+    contentType.startsWith('text/') ||
+    contentType === 'application/javascript' ||
+    contentType === 'application/json' ||
+    contentType === 'application/manifest+json'
+  );
+}
+
+function fromUtf8(buffer: Uint8Array) {
+  return new TextDecoder().decode(buffer);
+}
+
+function createBlobUrl() {
   const blob = new Blob([response.value.body], { type: contentType.value });
-  const link = document.createElement('a');
-  link.href = URL.createObjectURL(blob);
-  return link;
+  return URL.createObjectURL(blob);
 }
 
 function onOpen() {
-  const link = createLink();
+  const link = document.createElement('a');
+  link.href = createBlobUrl();
   link.target = '_blank';
   link.click();
 }
 
 function onDownload() {
-  const link = createLink();
+  const link = document.createElement('a');
+  link.href = createBlobUrl();
   link.download = responseInfo.value.pathParts.slice(-1)[0];
   link.click();
 }
@@ -65,12 +78,12 @@ function onDownload() {
     <dl class="inline-grid grid-cols-[auto_1fr] gap-x-3">
       <dt class="text-slate-400">Path</dt>
       <dd>{{ responseInfo.path }}</dd>
-      <dt v-if="responseInfo.origin !== undefined" class="text-slate-400">
-        Origin
-      </dt>
-      <dd v-if="responseInfo.origin !== undefined">
-        {{ responseInfo.origin }}
-      </dd>
+      <template v-if="responseInfo.origin !== undefined">
+        <dt class="text-slate-400">Origin</dt>
+        <dd>
+          {{ responseInfo.origin }}
+        </dd>
+      </template>
     </dl>
   </div>
 
@@ -85,5 +98,15 @@ function onDownload() {
     </dl>
   </div>
 
-  <h2 class="p-1 my-3 border-b font-bold dark:border-slate-600">Preview</h2>
+  <template v-if="contentType !== undefined">
+    <h2 class="p-1 my-3 border-b font-bold dark:border-slate-600">Preview</h2>
+    <div class="p-1">
+      <img v-if="contentType.startsWith('image/')" :src="createBlobUrl()" />
+      <pre
+        v-else-if="isText(contentType)"
+        class="whitespace-pre-wrap overflow-x-auto text-slate-300"
+        >{{ fromUtf8(response.body) }}</pre
+      >
+    </div>
+  </template>
 </template>
