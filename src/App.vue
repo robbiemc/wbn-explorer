@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-import { WebBundle } from './BundleReader';
+import { WebBundle, bundleFileTypes } from './BundleReader';
 
 import DropTarget from './components/DropTarget.vue';
 import ResourceInfo from './components/ResourceInfo.vue';
@@ -14,7 +14,7 @@ const selected = ref<string | undefined>();
 </script>
 
 <template>
-  <DropTarget :file-types="['.wbn', '.swbn']" v-model:dragging="draggingOnPage">
+  <DropTarget :file-types="bundleFileTypes" v-model:dragging="draggingOnPage">
     <div class="container flex flex-row mx-auto">
       <aside class="w-full lg:w-1/3 xl:w-1/4 h-screen flex flex-col">
         <h1 class="py-2 text-2xl font-bold">Web Bundle Explorer</h1>

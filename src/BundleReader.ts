@@ -31,6 +31,8 @@ export type WebBundle = {
   index: WebBundleIndex;
 };
 
+export const bundleFileTypes = ['.wbn', '.swbn'];
+
 export class BundleReader {
   constructor(private bundle: File) {}
 

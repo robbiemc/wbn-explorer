@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 
-import { BundleReader, WebBundle } from '../BundleReader';
+import { BundleReader, WebBundle, bundleFileTypes } from '../BundleReader';
 import { treeifyBundle } from '../treeify-bundle';
 
 import DropTarget from './DropTarget.vue';
@@ -18,8 +18,6 @@ const emit = defineEmits<{
   (e: 'update:bundle', bundle?: WebBundle): void;
   (e: 'update:selected', id?: string): void;
 }>();
-
-const bundleTypes = ['.wbn', '.swbn'];
 
 const draggingOnTree = ref<boolean>(false);
 const expandTree = ref<boolean>(true);
@@ -97,7 +95,7 @@ const bundleTree = computed(() => {
     </button>
   </div>
   <DropTarget
-    :file-types="bundleTypes"
+    :file-types="bundleFileTypes"
     v-model:dragging="draggingOnTree"
     @drop="onDrop"
     class="flex-grow overflow-y-auto border-dashed border-4"
