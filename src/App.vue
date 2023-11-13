@@ -10,7 +10,7 @@ import SidePanel from './components/SidePanel.vue';
 const draggingOnPage = ref<boolean>(false);
 
 const bundle = ref<WebBundle | undefined>();
-const selected = ref<string | undefined>();
+const selectedId = ref<string | undefined>();
 </script>
 
 <template>
@@ -21,17 +21,20 @@ const selected = ref<string | undefined>();
         <SidePanel
           :dragging-on-page="draggingOnPage"
           v-model:bundle="bundle"
-          v-model:selected="selected"
+          v-model:selected="selectedId"
         ></SidePanel>
       </aside>
-      <main class="w-full lg:w-2/3 xl:w-3/4">
-        <h1 class="py-2 text-2xl font-bold"><!-- Spacing -->&nbsp;</h1>
-        <h2>Selected file path</h2>
+      <main class="w-full lg:w-2/3 xl:w-3/4 ml-2">
+        <h1 class="py-2 text-2xl font-bold">&nbsp;</h1>
+        <h2 class="p-1 border-b font-bold dark:border-slate-600">
+          <!-- TODO: truncate url/path -->
+          {{ selectedId }}
+        </h2>
         <div class="">
           <ResourceInfo
-            v-if="bundle !== undefined && selected !== undefined"
+            v-if="bundle !== undefined && selectedId !== undefined"
             :bundle="bundle"
-            :url="selected"
+            :url="selectedId"
           ></ResourceInfo>
         </div>
       </main>

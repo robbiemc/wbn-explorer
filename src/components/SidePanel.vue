@@ -64,7 +64,7 @@ const bundleTree = computed(() => {
 </script>
 
 <template>
-  <div class="p-1 flex gap-1 items-stretch border-b dark:border-slate-600">
+  <h2 class="p-1 flex gap-1 items-stretch border-b dark:border-slate-600">
     <label class="flex px-1 rounded hover:bg-slate-500 cursor-pointer">
       <SvgIcon class="inline w-4" type="folder_open"></SvgIcon>
       <input
@@ -93,7 +93,7 @@ const bundleTree = computed(() => {
     >
       <SvgIcon class="inline w-4" type="minus"></SvgIcon>
     </button>
-  </div>
+  </h2>
   <DropTarget
     :file-types="bundleFileTypes"
     v-model:dragging="draggingOnTree"
@@ -109,7 +109,7 @@ const bundleTree = computed(() => {
     <Tree
       v-if="bundleTree !== undefined"
       :nodes="bundleTree"
-      :selected="selected"
+      :selected-id="selected"
       :expanded="expandTree"
       @node-selected="(id) => emit('update:selected', id)"
     ></Tree>

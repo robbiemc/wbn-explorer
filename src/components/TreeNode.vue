@@ -9,7 +9,7 @@ import Tree from './Tree.vue';
 
 const props = defineProps<{
   node: TreeNode;
-  selected?: string;
+  selectedId?: string;
   expanded?: boolean;
   indent?: number;
 }>();
@@ -76,7 +76,7 @@ watch(
 
       <span
         class="py-1 whitespace-nowrap overflow-hidden overflow-ellipsis"
-        :class="{ 'font-bold': selected !== undefined && selected === node.id }"
+        :class="{ 'font-bold': selectedId !== undefined && selectedId === node.id }"
       >
         {{ node.name }}
       </span>
@@ -86,7 +86,7 @@ watch(
       v-if="isFolder"
       v-show="isExpanded"
       :nodes="node.children as TreeNode[]"
-      :selected="selected"
+      :selected-id="selectedId"
       :expanded="expanded"
       :indent="(indent || 0) + 1"
       @node-selected="(id) => emit('nodeSelected', id)"
