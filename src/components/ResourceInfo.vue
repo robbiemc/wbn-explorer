@@ -17,13 +17,29 @@ const response = computed(() => {
 const responseInfo = computed(() => {
   return props.bundle.index[props.selectedId];
 });
+const contentType = computed<string | undefined>(() => {
+  const entries = Object.entries(response.value.headers);
+  const lowered = entries.map(([h, v]) => [h.toLowerCase(), v]);
+  return Object.fromEntries(lowered)['content-type'];
+});
+
+function createLink() {
+  const blob = new Blob([response.value.body], { type: contentType.value });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  return link;
+}
 
 function onOpen() {
-  //
+  const link = createLink();
+  link.target = '_blank';
+  link.click();
 }
 
 function onDownload() {
-  //
+  const link = createLink();
+  link.download = responseInfo.value.pathParts.slice(-1)[0];
+  link.click();
 }
 </script>
 
@@ -37,6 +53,7 @@ function onDownload() {
       </span>
       <span class="flex-grow"></span>
       <button
+        v-if="contentType !== undefined"
         v-for="(action, label) in { Open: onOpen, Download: onDownload }"
         @click="action"
         class="p-1 m-1 rounded text-slate-50 bg-slate-600 hover:bg-slate-500"
