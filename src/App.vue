@@ -17,7 +17,9 @@ const selectedId = ref<string | undefined>();
 <template>
   <DropTarget :file-types="bundleFileTypes" v-model:dragging="draggingOnPage">
     <div class="container flex flex-row mx-auto">
-      <aside class="w-full lg:w-1/3 xl:w-1/4 h-screen flex flex-col">
+      <aside
+        class="sticky top-0 w-full lg:w-1/3 xl:w-1/4 h-screen flex flex-col"
+      >
         <h1 class="py-2 text-2xl font-bold">Web Bundle Explorer</h1>
         <SidePanel
           :dragging-on-page="draggingOnPage"
@@ -26,13 +28,15 @@ const selectedId = ref<string | undefined>();
         ></SidePanel>
       </aside>
       <main class="w-full lg:w-2/3 xl:w-3/4 ml-2">
-        <h1 class="py-2 text-2xl font-bold">&nbsp;</h1>
-        <h2
-          v-if="bundle !== undefined && selectedId !== undefined"
-          class="p-1 border-b font-bold dark:border-slate-600"
-        >
-          {{ textEllipsis(selectedId, 64, { side: 'start' }) }}
-        </h2>
+        <div class="sticky top-0">
+          <h1 class="py-2 text-2xl font-bold bg-slate-900">&nbsp;</h1>
+          <h2
+            v-if="bundle !== undefined && selectedId !== undefined"
+            class="p-1 border-b font-bold dark:border-slate-600 bg-slate-900"
+          >
+            {{ textEllipsis(selectedId, 64, { side: 'start' }) }}
+          </h2>
+        </div>
         <ResourceInfo
           v-if="bundle !== undefined && selectedId !== undefined"
           :bundle="bundle"
