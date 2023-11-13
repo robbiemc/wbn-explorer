@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-import { WebBundle, bundleFileTypes } from './BundleReader';
+import textEllipsis from 'text-ellipsis';
 
+import { WebBundle, bundleFileTypes } from './BundleReader';
 import DropTarget from './components/DropTarget.vue';
 import ResourceInfo from './components/ResourceInfo.vue';
 import SidePanel from './components/SidePanel.vue';
@@ -26,17 +27,17 @@ const selectedId = ref<string | undefined>();
       </aside>
       <main class="w-full lg:w-2/3 xl:w-3/4 ml-2">
         <h1 class="py-2 text-2xl font-bold">&nbsp;</h1>
-        <h2 class="p-1 border-b font-bold dark:border-slate-600">
-          <!-- TODO: truncate url/path -->
-          {{ selectedId }}
+        <h2
+          v-if="bundle !== undefined && selectedId !== undefined"
+          class="p-1 border-b font-bold dark:border-slate-600"
+        >
+          {{ textEllipsis(selectedId, 64, { side: 'start' }) }}
         </h2>
-        <div class="">
-          <ResourceInfo
-            v-if="bundle !== undefined && selectedId !== undefined"
-            :bundle="bundle"
-            :url="selectedId"
-          ></ResourceInfo>
-        </div>
+        <ResourceInfo
+          v-if="bundle !== undefined && selectedId !== undefined"
+          :bundle="bundle"
+          :selected-id="selectedId"
+        ></ResourceInfo>
       </main>
     </div>
   </DropTarget>

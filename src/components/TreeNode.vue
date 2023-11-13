@@ -38,8 +38,8 @@ watch(
       class="flex gap-2 items-stretch rounded border border-transparent"
       :class="
         node.id
-          ? 'text-white hover:bg-slate-600 cursor-pointer'
-          : 'text-gray-400 hover:border-slate-500 cursor-default'
+          ? 'text-slate-50 hover:bg-slate-600 cursor-pointer'
+          : 'text-slate-400 hover:border-slate-500 cursor-default'
       "
     >
       <span
