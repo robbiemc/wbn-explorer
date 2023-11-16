@@ -15,20 +15,31 @@ export type SignatureBlock = {
   valid: boolean;
 };
 
-export type WebBundleIndex = {
-  [key: string]: {
+interface Headers {
+  [key: string]: string;
+}
+
+export type Resource = {
+  id: string;
+  url: {
     path: string;
     pathParts: string[];
     origin?: string;
     query?: string;
   };
+
+  status: number;
+  headers: Headers;
+  contentType?: string;
+  body: Uint8Array;
 };
+
+export type ResourceMap = { [key: string]: Resource };
 
 export type WebBundle = {
   filename: string;
   signatureBlock?: SignatureBlock;
-  contents: Bundle;
-  index: WebBundleIndex;
+  resources: ResourceMap;
 };
 
 export const bundleFileTypes = ['.wbn', '.swbn'];
@@ -74,8 +85,7 @@ export class BundleReader {
     return {
       filename: this.bundle.name,
       signatureBlock,
-      contents,
-      index: this.createIndex(contents),
+      resources: this.createResourcesMap(contents),
     };
   }
 
@@ -105,8 +115,8 @@ export class BundleReader {
     };
   }
 
-  private createIndex(bundle: Bundle): WebBundleIndex {
-    const index: WebBundleIndex = {};
+  private createResourcesMap(bundle: Bundle): ResourceMap {
+    const resources: ResourceMap = {};
     const baseHost = `invalid-${String(Math.random()).slice(-6)}`;
     const baseUrl = `http://${baseHost}`;
     for (const url of bundle.urls) {
@@ -119,16 +129,31 @@ export class BundleReader {
       if (pathParts.length === 1 && pathParts[0] === '') {
         pathParts.pop();
       }
-      index[url] = {
-        path: parsed.pathname,
-        pathParts,
-        query: parsed.search || undefined,
+      const resource = bundle.getResponse(url);
+      resources[url] = {
+        id: url,
+        url: {
+          path: parsed.pathname,
+          pathParts,
+          query: parsed.search || undefined,
+        },
+        status: resource.status,
+        headers: resource.headers,
+        body: resource.body,
       };
+
       if (parsed.hostname !== baseHost) {
         const port = parsed.port ? `:${parsed.port}` : '';
-        index[url].origin = `${parsed.protocol}//${parsed.hostname}${port}`;
+        const origin = `${parsed.protocol}//${parsed.hostname}${port}`;
+        resources[url].url.origin = origin;
+      }
+
+      for (const [header, value] of Object.entries(resource.headers)) {
+        if (header.toLowerCase() === 'content-type') {
+          resources[url].contentType = value;
+        }
       }
     }
-    return index;
+    return resources;
   }
 }

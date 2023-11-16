@@ -8,12 +8,12 @@ type MappedTreeNode = {
 
 export function treeifyBundle(bundle: WebBundle) {
   const mappedTree: MappedTreeNode = {};
-  for (const [id, metadata] of Object.entries(bundle.index)) {
-    const pathParts = [...metadata.pathParts];
-    if (metadata.query !== undefined) {
-      pathParts.push(metadata.query); // already has a '?' prefix
+  for (const [id, resource] of Object.entries(bundle.resources)) {
+    const pathParts = [...resource.url.pathParts];
+    if (resource.url.query !== undefined) {
+      pathParts.push(resource.url.query); // already has a '?' prefix
     }
-    pathParts.unshift(metadata.origin === undefined ? '/' : metadata.origin);
+    pathParts.unshift(resource.url.origin ?? '/');
 
     let parent = mappedTree;
     while (pathParts.length > 0) {

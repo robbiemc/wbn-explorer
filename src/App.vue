@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 import textEllipsis from 'text-ellipsis';
 
@@ -7,11 +7,19 @@ import { WebBundle, bundleFileTypes } from './BundleReader';
 import DropTarget from './components/DropTarget.vue';
 import ResourceInfo from './components/ResourceInfo.vue';
 import SidePanel from './components/SidePanel.vue';
+import PreviewPane from './components/PreviewPane.vue';
 
 const draggingOnPage = ref<boolean>(false);
 
 const bundle = ref<WebBundle | undefined>();
 const selectedId = ref<string | undefined>();
+
+const resource = computed(() => {
+  if (bundle.value === undefined || selectedId.value === undefined) {
+    return undefined;
+  }
+  return bundle.value.resources[selectedId.value];
+});
 </script>
 
 <template>
@@ -28,20 +36,18 @@ const selectedId = ref<string | undefined>();
         ></SidePanel>
       </aside>
       <main class="w-full lg:w-2/3 xl:w-3/4 ml-2">
-        <div class="sticky top-0">
-          <h1 class="py-2 text-2xl font-bold bg-slate-900">&nbsp;</h1>
-          <h2
-            v-if="bundle !== undefined && selectedId !== undefined"
-            class="p-1 border-b font-bold dark:border-slate-600 bg-slate-900"
-          >
-            {{ textEllipsis(selectedId, 64, { side: 'start' }) }}
-          </h2>
-        </div>
-        <ResourceInfo
-          v-if="bundle !== undefined && selectedId !== undefined"
-          :bundle="bundle"
-          :selected-id="selectedId"
-        ></ResourceInfo>
+        <template v-if="resource !== undefined">
+          <div class="sticky top-0">
+            <h1 class="py-2 text-2xl font-bold bg-slate-900">&nbsp;</h1>
+            <h2
+              class="p-1 border-b font-bold dark:border-slate-600 bg-slate-900"
+            >
+              {{ textEllipsis(selectedId, 64, { side: 'start' }) }}
+            </h2>
+          </div>
+          <ResourceInfo :resource="resource"></ResourceInfo>
+          <PreviewPane :resource="resource"></PreviewPane>
+        </template>
       </main>
     </div>
   </DropTarget>
