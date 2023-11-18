@@ -1,6 +1,8 @@
 import { WebBundle } from './BundleReader';
 import { TreeNode } from './components/Tree.vue';
 
+export const INTEGRITY_BLOCK_ID = '~integrity_block~';
+
 type MappedTreeNode = {
   id?: string;
   children?: { [key: string]: MappedTreeNode };
@@ -31,7 +33,15 @@ export function treeifyBundle(bundle: WebBundle) {
       parent = child;
     }
   }
-  return unmapTreeNode(mappedTree);
+  const nodes = unmapTreeNode(mappedTree);
+  if (bundle.signatureBlock !== undefined) {
+    nodes.unshift({
+      id: INTEGRITY_BLOCK_ID,
+      name: 'Integrity Block',
+      noIcon: true,
+    });
+  }
+  return nodes;
 }
 
 function unmapTreeNode(mapped: MappedTreeNode): TreeNode[] {

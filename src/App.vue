@@ -3,11 +3,13 @@ import { computed, ref } from 'vue';
 
 import textEllipsis from 'text-ellipsis';
 
+import { INTEGRITY_BLOCK_ID } from './treeify-bundle';
 import { WebBundle, bundleFileTypes } from './BundleReader';
 import DropTarget from './components/DropTarget.vue';
+import IntegrityBlockInfo from './components/IntegrityBlockInfo.vue';
+import PreviewPane from './components/PreviewPane.vue';
 import ResourceInfo from './components/ResourceInfo.vue';
 import SidePanel from './components/SidePanel.vue';
-import PreviewPane from './components/PreviewPane.vue';
 
 const draggingOnPage = ref<boolean>(false);
 
@@ -35,18 +37,31 @@ const resource = computed(() => {
           v-model:selected="selectedId"
         ></SidePanel>
       </aside>
+
       <main class="w-full lg:w-2/3 xl:w-3/4 ml-2">
-        <template v-if="resource !== undefined">
+        <template v-if="selectedId !== undefined">
           <div class="sticky top-0">
             <h1 class="py-2 text-2xl font-bold bg-slate-900">&nbsp;</h1>
             <h2
               class="p-1 border-b font-bold dark:border-slate-600 bg-slate-900"
             >
-              {{ textEllipsis(selectedId, 64, { side: 'start' }) }}
+              <template v-if="resource !== undefined">
+                {{ textEllipsis(selectedId, 64, { side: 'start' }) }}
+              </template>
+              <template v-else-if="selectedId === INTEGRITY_BLOCK_ID">
+                Integrity Block
+              </template>
             </h2>
           </div>
-          <ResourceInfo :resource="resource"></ResourceInfo>
-          <PreviewPane :resource="resource"></PreviewPane>
+
+          <template v-if="resource !== undefined">
+            <ResourceInfo :resource="resource"></ResourceInfo>
+            <PreviewPane :resource="resource"></PreviewPane>
+          </template>
+          <IntegrityBlockInfo
+            v-else-if="selectedId === INTEGRITY_BLOCK_ID && bundle !== undefined"
+            :bundle="bundle"
+          ></IntegrityBlockInfo>
         </template>
       </main>
     </div>
