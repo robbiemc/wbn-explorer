@@ -52,5 +52,3 @@ const resource = computed(() => {
     </div>
   </DropTarget>
 </template>
-
-<style scoped></style>
