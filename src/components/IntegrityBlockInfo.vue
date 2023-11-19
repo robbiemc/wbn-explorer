@@ -4,6 +4,7 @@ import { computed } from 'vue';
 import { base32, base64 } from 'rfc4648';
 
 import { WebBundle } from '../BundleReader';
+import Header from './Header.vue';
 
 const props = defineProps<{
   bundle: WebBundle;
@@ -40,6 +41,7 @@ const data = computed(() => {
 </script>
 
 <template>
+  <Header sticky>Integrity Block</Header>
   <div class="px-1">
     <dl class="inline-grid grid-cols-[auto_1fr] gap-x-3">
       <template v-for="(value, key) in data">

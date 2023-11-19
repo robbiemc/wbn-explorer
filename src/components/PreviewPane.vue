@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 
+import Header from './Header.vue';
 import { Resource } from '../BundleReader';
 
 const props = defineProps<{
@@ -67,7 +68,7 @@ function formatJson() {
 
 <template>
   <template v-if="isText || isImage">
-    <h2 class="flex p-1 my-3 border-b font-bold dark:border-slate-600">
+    <Header>
       <span class="flex-grow">
         Preview
         <i v-if="truncatedText !== undefined">(Truncated)</i>
@@ -82,7 +83,7 @@ function formatJson() {
       >
         Format
       </button>
-    </h2>
+    </Header>
     <div class="p-1">
       <img v-if="isImage" :src="createBlobUrl()" />
       <pre

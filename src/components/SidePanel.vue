@@ -1,22 +1,26 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 
-import { BundleReader, WebBundle, bundleFileTypes } from '../BundleReader';
+import { BundleReader, WebBundle, WebBundleError, bundleFileTypes } from '../BundleReader';
 import { treeifyBundle } from '../treeify-bundle';
 
 import DropTarget from './DropTarget.vue';
 import SvgIcon from './SvgIcon.vue';
 import Tree from './Tree.vue';
 
+export type Error = WebBundleError | 'TOO_MANY_FILES';
+
 const props = defineProps<{
   bundle?: WebBundle;
   selected?: string;
+  error?: Error;
   draggingOnPage: boolean;
 }>();
 
 const emit = defineEmits<{
   (e: 'update:bundle', bundle?: WebBundle): void;
   (e: 'update:selected', id?: string): void;
+  (e: 'update:error', code?: Error): void;
 }>();
 
 const draggingOnTree = ref<boolean>(false);
@@ -24,16 +28,31 @@ const expandTree = ref<boolean>(true);
 
 const bundleFile = ref<File | undefined>();
 
+function onError(error: Error) {
+  emit('update:bundle', undefined);
+  emit('update:selected', undefined);
+  emit('update:error', error);
+}
+
+function onBundleOpened(bundle: WebBundle | undefined) {
+  emit('update:bundle', bundle);
+  emit('update:selected', undefined);
+  emit('update:error', undefined);
+}
+
 function onFileSelected(event: Event) {
   const input = event.target as HTMLInputElement;
   const files = input.files as FileList;
-  // TODO: handle multiple files
+  if (files.length !== 1) {
+    onError('TOO_MANY_FILES');
+    return;
+  }
   bundleFile.value = files[0];
 }
 
 function onDrop(files: File[]) {
   if (files.length != 1) {
-    // TODO: handle multiple files
+    onError('TOO_MANY_FILES');
     return;
   }
   bundleFile.value = files[0];
@@ -42,17 +61,16 @@ function onDrop(files: File[]) {
 watch(bundleFile, async () => {
   emit('update:selected', undefined);
   if (bundleFile.value === undefined) {
-    emit('update:bundle', undefined);
+    onBundleOpened(undefined);
     return;
   }
   const reader = new BundleReader(bundleFile.value);
   const readResult = await reader.read();
   if (typeof readResult === 'string') {
-    // TODO: handle errors
-    emit('update:bundle', undefined);
+    onError(readResult);
     return;
   }
-  emit('update:bundle', readResult);
+  onBundleOpened(readResult);
 });
 
 const bundleTree = computed(() => {
