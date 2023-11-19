@@ -5,8 +5,6 @@ import SvgIcon from './SvgIcon.vue';
 import { TreeNode } from './Tree.vue';
 import Tree from './Tree.vue';
 
-// Icons: https://flowbite.com/icons/
-
 const props = defineProps<{
   node: TreeNode;
   selectedId?: string;

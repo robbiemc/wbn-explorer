@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Error } from './SidePanel.vue';
+import { Error } from './SidePane.vue';
 import Header from './Header.vue';
 
 defineProps<{

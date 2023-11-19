@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// Icons: https://flowbite.com/icons/
 defineProps<{
   type: 'plus' | 'minus' | 'folder_closed' | 'folder_open' | 'file' | 'caret';
 }>();

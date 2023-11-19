@@ -59,7 +59,6 @@ function onDrop(files: File[]) {
 }
 
 watch(bundleFile, async () => {
-  emit('update:selected', undefined);
   if (bundleFile.value === undefined) {
     onBundleOpened(undefined);
     return;
