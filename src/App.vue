@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 
-import { Error } from './components/SidePanel.vue';
+import { Error } from './components/SidePane.vue';
 import { INTEGRITY_BLOCK_ID } from './treeify-bundle';
 import { WebBundle, bundleFileTypes } from './BundleReader';
 import DropTarget from './components/DropTarget.vue';
 import ErrorPane from './components/ErrorPane.vue';
-import IntegrityBlockInfo from './components/IntegrityBlockInfo.vue';
+import IntegrityBlockInfo from './components/IntegrityBlockPane.vue';
 import PreviewPane from './components/PreviewPane.vue';
-import ResourceInfo from './components/ResourceInfo.vue';
-import SidePanel from './components/SidePanel.vue';
+import ResourceInfo from './components/ResourceInfoPane.vue';
+import SidePanel from './components/SidePane.vue';
 
 const draggingOnPage = ref<boolean>(false);
 
