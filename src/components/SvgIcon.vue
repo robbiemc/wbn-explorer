@@ -8,7 +8,7 @@ defineProps<{
 <template>
   <svg
     v-if="type === 'plus'"
-    class="text-gray-800 dark:text-white"
+    class="text-primary"
     aria-hidden="true"
     xmlns="http://www.w3.org/2000/svg"
     fill="none"
@@ -25,7 +25,7 @@ defineProps<{
 
   <svg
     v-else-if="type === 'minus'"
-    class="text-gray-800 dark:text-white"
+    class="text-primary"
     aria-hidden="true"
     xmlns="http://www.w3.org/2000/svg"
     fill="none"
@@ -42,7 +42,7 @@ defineProps<{
 
   <svg
     v-else-if="type === 'folder_closed'"
-    class="text-gray-800 dark:text-white"
+    class="text-primary"
     aria-hidden="true"
     xmlns="http://www.w3.org/2000/svg"
     fill="none"
@@ -59,7 +59,7 @@ defineProps<{
 
   <svg
     v-else-if="type === 'folder_open'"
-    class="text-gray-800 dark:text-white"
+    class="text-primary"
     aria-hidden="true"
     xmlns="http://www.w3.org/2000/svg"
     fill="none"
@@ -76,7 +76,7 @@ defineProps<{
 
   <svg
     v-else-if="type === 'file'"
-    class="text-gray-800 dark:text-white"
+    class="text-primary"
     aria-hidden="true"
     xmlns="http://www.w3.org/2000/svg"
     fill="none"
@@ -92,7 +92,7 @@ defineProps<{
 
   <svg
     v-else-if="type === 'caret'"
-    class="text-gray-800 dark:text-white"
+    class="text-primary"
     aria-hidden="true"
     xmlns="http://www.w3.org/2000/svg"
     fill="none"

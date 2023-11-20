@@ -45,7 +45,7 @@ const data = computed(() => {
   <div class="px-1">
     <dl class="inline-grid grid-cols-[auto_1fr] gap-x-3">
       <template v-for="(value, key) in data">
-        <dt class="text-slate-400">{{ key }}</dt>
+        <dt class="text-secondary">{{ key }}</dt>
         <dd class="font-mono">{{ value }}</dd>
       </template>
     </dl>

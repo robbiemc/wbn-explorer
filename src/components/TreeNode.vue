@@ -36,8 +36,8 @@ watch(
       class="flex gap-2 items-stretch rounded border border-transparent"
       :class="
         node.id
-          ? 'text-slate-50 hover:bg-slate-600 cursor-pointer'
-          : 'text-slate-400 hover:border-slate-500 cursor-default'
+          ? 'text-primary hover:bg-button cursor-pointer'
+          : 'text-secondary hover:border-divider cursor-default'
       "
     >
       <span
@@ -48,7 +48,7 @@ watch(
       <!-- Folder arrow -->
       <span
         class="flex-shrink-0 flex items-center justify-center w-5 mr-1 cursor-pointer"
-        :class="{ 'hover:bg-slate-500': isFolder }"
+        :class="{ 'hover:bg-button-hover': isFolder }"
         @click.stop="isExpanded = !isExpanded"
       >
         <SvgIcon

@@ -36,7 +36,7 @@ function onDownload() {
   <Header sticky>{{ textEllipsis(resource.id, 64, { side: 'start' }) }}</Header>
   <div class="px-1">
     <p class="flex items-stretch">
-      <span class="flex items-center text-slate-400">
+      <span class="flex items-center text-secondary">
         {{ `${resource.status} ${getReasonPhrase(resource.status)}` }}
         &nbsp;-&nbsp;
         {{ filesize(resource.body.byteLength) }}
@@ -46,17 +46,17 @@ function onDownload() {
         v-if="resource.contentType !== undefined"
         v-for="(action, label) in { Open: onOpen, Download: onDownload }"
         @click="action"
-        class="p-1 m-1 rounded text-slate-50 bg-slate-600 hover:bg-slate-500"
+        class="p-1 m-1 rounded text-primary bg-button hover:bg-button-hover"
       >
         {{ label }}
       </button>
     </p>
 
     <dl class="inline-grid grid-cols-[auto_1fr] gap-x-3">
-      <dt class="text-slate-400">Path</dt>
+      <dt class="text-secondary">Path</dt>
       <dd>{{ resource.url.path }}</dd>
       <template v-if="resource.url.origin !== undefined">
-        <dt class="text-slate-400">Origin</dt>
+        <dt class="text-secondary">Origin</dt>
         <dd>
           {{ resource.url.origin }}
         </dd>
@@ -69,7 +69,7 @@ function onDownload() {
     <i v-if="Object.keys(resource.headers).length === 0">None</i>
     <dl v-else class="inline-grid grid-cols-[auto_1fr] gap-x-3">
       <template v-for="(value, name) in resource.headers">
-        <dt class="text-slate-400">{{ name }}</dt>
+        <dt class="text-secondary">{{ name }}</dt>
         <dd>{{ value }}</dd>
       </template>
     </dl>

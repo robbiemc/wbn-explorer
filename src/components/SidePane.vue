@@ -81,8 +81,8 @@ const bundleTree = computed(() => {
 </script>
 
 <template>
-  <h2 class="p-1 flex gap-1 items-stretch border-b dark:border-slate-600">
-    <label class="flex px-1 rounded hover:bg-slate-500 cursor-pointer">
+  <h2 class="p-1 flex gap-1 items-stretch border-b border-divider">
+    <label class="flex px-1 rounded hover:bg-button-hover cursor-pointer">
       <SvgIcon class="inline w-4" type="folder_open"></SvgIcon>
       <input
         class="hidden"
@@ -98,14 +98,14 @@ const bundleTree = computed(() => {
     <span class="flex-grow"><!-- padding --></span>
     <button
       v-if="bundle !== undefined"
-      class="flex px-1 rounded hover:bg-slate-500"
+      class="flex px-1 rounded hover:bg-button-hover"
       @click="expandTree = true"
     >
       <SvgIcon class="inline w-4" type="plus"></SvgIcon>
     </button>
     <button
       v-if="bundle !== undefined"
-      class="flex px-1 rounded hover:bg-slate-500"
+      class="flex px-1 rounded hover:bg-button-hover"
       @click="expandTree = false"
     >
       <SvgIcon class="inline w-4" type="minus"></SvgIcon>
@@ -118,9 +118,9 @@ const bundleTree = computed(() => {
     class="flex-grow overflow-y-auto border-dashed border-4"
     :class="{
       'border-transparent': !draggingOnPage,
-      'border-slate-600': draggingOnPage,
-      'bg-slate-700': draggingOnPage && !draggingOnTree,
-      'bg-slate-600': draggingOnTree,
+      'border-drag-hover': draggingOnPage,
+      'bg-drag': draggingOnPage && !draggingOnTree,
+      'bg-drag-hover': draggingOnTree,
     }"
   >
     <Tree

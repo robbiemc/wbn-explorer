@@ -79,7 +79,7 @@ function formatJson() {
           isJson && truncatedText === undefined && formattedText === undefined
         "
         @click="formatJson"
-        class="px-1 rounded font-normal text-slate-50 bg-slate-600 hover:bg-slate-500"
+        class="px-1 rounded font-normal bg-button hover:bg-button-hover"
       >
         Format
       </button>
@@ -88,7 +88,7 @@ function formatJson() {
       <img v-if="isImage" :src="createBlobUrl()" />
       <pre
         v-else-if="isText"
-        class="whitespace-pre-wrap overflow-x-auto text-slate-300"
+        class="whitespace-pre-wrap overflow-x-auto text-terciary"
         >{{ previewBody }}</pre
       >
     </div>
