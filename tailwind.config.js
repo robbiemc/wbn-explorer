@@ -11,7 +11,8 @@ export default {
     extend: {},
   },
   plugins: [
-    createThemes({
+    createThemes(
+      {
         light: {
           background: colors.slate[100],
           divider: colors.slate[500],
@@ -36,6 +37,8 @@ export default {
           drag: colors.slate[700],
           'drag-hover': colors.slate[600],
         },
-    })
+      },
+      { defaultTheme: { light: 'light', dark: 'dark' } },
+    ),
   ],
-}
+};
