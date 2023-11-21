@@ -13,16 +13,16 @@ export default {
   plugins: [
     createThemes({
         light: {
-          background: colors.white,
-          divider: colors.white,
-          header: colors.white,
-          primary: colors.white,
-          secondary: colors.white,
-          terciary: colors.white,
-          button: colors.white,
-          'button-hover': colors.white,
-          drag: colors.white,
-          'drag-hover': colors.white,
+          background: colors.slate[100],
+          divider: colors.slate[500],
+          header: colors.slate[900],
+          primary: colors.slate[900],
+          secondary: colors.slate[500],
+          terciary: colors.slate[700],
+          button: colors.slate[300],
+          'button-hover': colors.slate[400],
+          drag: colors.slate[200],
+          'drag-hover': colors.slate[300],
         },
         dark: {
           background: colors.slate[900],

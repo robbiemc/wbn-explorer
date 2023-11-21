@@ -98,14 +98,14 @@ const bundleTree = computed(() => {
     <span class="flex-grow"><!-- padding --></span>
     <button
       v-if="bundle !== undefined"
-      class="flex px-1 rounded hover:bg-button-hover"
+      class="flex px-1 rounded hover:bg-button"
       @click="expandTree = true"
     >
       <SvgIcon class="inline w-4" type="plus"></SvgIcon>
     </button>
     <button
       v-if="bundle !== undefined"
-      class="flex px-1 rounded hover:bg-button-hover"
+      class="flex px-1 rounded hover:bg-button"
       @click="expandTree = false"
     >
       <SvgIcon class="inline w-4" type="minus"></SvgIcon>
