@@ -82,8 +82,11 @@ const bundleTree = computed(() => {
 
 <template>
   <h2 class="p-1 flex gap-1 items-stretch border-b border-divider">
-    <label class="flex px-1 rounded hover:bg-button-hover cursor-pointer">
-      <SvgIcon class="inline w-4" type="folder_open"></SvgIcon>
+    <label class="flex gap-1">
+      <span class="flex px-1 rounded hover:bg-button-hover cursor-pointer">
+        <SvgIcon class="inline w-4" type="folder_open"></SvgIcon>
+      </span>
+      <i v-if="bundle === undefined">Select a .wbn/.swbn file</i>
       <input
         class="hidden"
         type="file"
@@ -91,10 +94,7 @@ const bundleTree = computed(() => {
         @change="onFileSelected"
       />
     </label>
-    <h2>
-      <b v-if="bundle !== undefined" class="text-l">{{ bundle.filename }}</b>
-      <i v-else>Select a .wbn/.swbn file</i>
-    </h2>
+    <h2 v-if="bundle !== undefined" class="text-l">{{ bundle.filename }}</h2>
     <span class="flex-grow"><!-- padding --></span>
     <button
       v-if="bundle !== undefined"
