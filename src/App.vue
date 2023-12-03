@@ -6,6 +6,7 @@ import { INTEGRITY_BLOCK_ID } from './treeify-bundle';
 import { WebBundle, bundleFileTypes } from './BundleReader';
 import DropTarget from './components/DropTarget.vue';
 import ErrorPane from './components/ErrorPane.vue';
+import HomePane from './components/HomePane.vue';
 import IntegrityBlockInfo from './components/IntegrityBlockPane.vue';
 import PreviewPane from './components/PreviewPane.vue';
 import ResourceInfo from './components/ResourceInfoPane.vue';
@@ -50,6 +51,7 @@ const resource = computed(() => {
           v-else-if="selectedId === INTEGRITY_BLOCK_ID && bundle !== undefined"
           :bundle="bundle"
         ></IntegrityBlockInfo>
+        <HomePane v-else :bundle="bundle"></HomePane>
       </main>
     </div>
   </DropTarget>
