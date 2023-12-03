@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { filesize } from 'filesize';
 import { getReasonPhrase } from 'http-status-codes';
+// @ts-ignore
 import textEllipsis from 'text-ellipsis';
 
 import { Resource } from '../BundleReader';
