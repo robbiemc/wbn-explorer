@@ -28,7 +28,7 @@ const resource = computed(() => {
 
 <template>
   <DropTarget :file-types="bundleFileTypes" v-model:dragging="draggingOnPage">
-    <div class="container flex lg:flex-row mx-auto">
+    <div class="container flex lg:flex-row mx-auto px-1">
       <aside
         class="sticky top-0 w-full lg:w-1/3 xl:w-1/4 h-screen flex flex-col"
       >

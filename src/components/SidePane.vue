@@ -83,7 +83,7 @@ const bundleTree = computed(() => {
 <template>
   <h2 class="p-1 flex gap-1 items-stretch border-b border-divider">
     <label class="flex gap-1">
-      <span class="flex px-1 rounded hover:bg-button-hover cursor-pointer">
+      <span class="flex items-center px-1 rounded hover:bg-button-hover cursor-pointer">
         <SvgIcon class="inline w-4" type="folder_open"></SvgIcon>
       </span>
       <i v-if="bundle === undefined">Select a .wbn/.swbn file</i>
@@ -98,14 +98,14 @@ const bundleTree = computed(() => {
     <span class="flex-grow"><!-- padding --></span>
     <button
       v-if="bundle !== undefined"
-      class="flex px-1 rounded hover:bg-button"
+      class="flex items-center px-1 rounded hover:bg-button"
       @click="expandTree = true"
     >
       <SvgIcon class="inline w-4" type="plus"></SvgIcon>
     </button>
     <button
       v-if="bundle !== undefined"
-      class="flex px-1 rounded hover:bg-button"
+      class="flex items-center px-1 rounded hover:bg-button"
       @click="expandTree = false"
     >
       <SvgIcon class="inline w-4" type="minus"></SvgIcon>
