@@ -74,7 +74,9 @@ watch(
 
       <span
         class="py-1 whitespace-nowrap overflow-hidden overflow-ellipsis"
-        :class="{ 'font-bold': selectedId !== undefined && selectedId === node.id }"
+        :class="{
+          'font-bold': selectedId !== undefined && selectedId === node.id,
+        }"
       >
         {{ node.name }}
       </span>

@@ -9,13 +9,15 @@ defineProps<{
 function stringifyError(error: Error) {
   switch (error) {
     case 'BAD_MAGIC':
-      return 'Invalid bundle: expected magic bytes \'🖋📦\' or \'🌐📦\'';
+      return "Invalid bundle: expected magic bytes '🖋📦' or '🌐📦'";
     case 'SIG_INVALID':
       return 'The integrity block has an unrecognized structure.';
     case 'SIG_UNKNOWN_VERSION':
       return 'The integrity block has an unknown version.';
     case 'SIG_UNSUPPORTED_KEY_TYPE':
-      return 'Unsupported public key type in integrity block. Only ed25519 is supported';
+      return 'Unsupported public key type in integrity block. Only ed25519/ecdsaP256 are supported';
+    case 'ATTRIBUTES_INVALID':
+      return 'Invalid attributes for Integrity Block v2.';
     case 'TOO_MANY_FILES':
       return 'Too many files were selected.';
   }

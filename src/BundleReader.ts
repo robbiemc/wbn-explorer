@@ -2,17 +2,33 @@ import { decodeFirst } from 'cborg';
 import { Bundle } from 'wbn';
 import whatwgUrl from 'whatwg-url';
 
-export type SignatureBlockError =
+export type IntegrityBlockError =
   | 'SIG_INVALID'
   | 'SIG_UNKNOWN_VERSION'
-  | 'SIG_UNSUPPORTED_KEY_TYPE';
+  | 'SIG_UNSUPPORTED_KEY_TYPE'
+  | 'ATTRIBUTES_INVALID';
 
-export type WebBundleError = SignatureBlockError | 'BAD_MAGIC';
+export type WebBundleError = IntegrityBlockError | 'BAD_MAGIC';
 
-export type SignatureBlock = {
-  ed25519PublicKey: Uint8Array;
+export enum SignatureType {
+  'Ed25519',
+  'EcdsaP256SHA256',
+}
+
+export type Signature = {
+  publicKey: Uint8Array;
   signature: Uint8Array;
+  type: SignatureType;
   valid: boolean;
+};
+
+export type Attributes = {
+  webBundleId: string;
+};
+
+export type IntegrityBlock = {
+  attributes?: Attributes;
+  signatures: Array<Signature>;
 };
 
 interface Headers {
@@ -38,7 +54,7 @@ export type ResourceMap = { [key: string]: Resource };
 
 export type WebBundle = {
   filename: string;
-  signatureBlock?: SignatureBlock;
+  integrityBlock?: IntegrityBlock;
   resources: ResourceMap;
 };
 
@@ -59,18 +75,18 @@ export class BundleReader {
     const u8BundleBuffer = new Uint8Array(bundleBuffer);
 
     let contentsBuffer = u8BundleBuffer;
-    let signatureBlock: SignatureBlock | undefined = undefined;
+    let integrityBlock: IntegrityBlock | undefined = undefined;
 
     const textDecoder = new TextDecoder();
     const magicBytes = new Uint8Array(bundleBuffer, 2, 8);
     switch (textDecoder.decode(magicBytes)) {
       case '🖋📦':
-        const [sigCbor, remaining] = decodeFirst(u8BundleBuffer);
-        const sig = this.parseSignatureBlock(sigCbor);
-        if (typeof sig === 'string') {
-          return sig;
+        const [ibCbor, remaining] = decodeFirst(u8BundleBuffer);
+        const ib = this.parseIntegrityBlock(ibCbor);
+        if (typeof ib === 'string') {
+          return ib;
         }
-        signatureBlock = sig;
+        integrityBlock = ib;
         contentsBuffer = remaining;
         break;
 
@@ -84,35 +100,95 @@ export class BundleReader {
     const contents = new Bundle(contentsBuffer);
     return {
       filename: this.bundle.name,
-      signatureBlock,
+      integrityBlock,
       resources: this.createResourcesMap(contents),
     };
   }
 
+  private parseAttributes(attributesCbor: any): Attributes | WebBundleError {
+    if ('webBundleId' in attributesCbor) {
+      const webBundleId = attributesCbor['webBundleId'];
+      if (typeof webBundleId !== 'string') {
+        return 'ATTRIBUTES_INVALID';
+      }
+      return { webBundleId };
+    }
+    return 'ATTRIBUTES_INVALID';
+  }
+
+  private parseSignatures(
+    signaturesCbor: any[],
+  ): Array<Signature> | WebBundleError {
+    const signatures = new Array<Signature>();
+    for (const signatureCbor of signaturesCbor) {
+      if (signatureCbor.length != 2) {
+        return 'SIG_INVALID';
+      }
+      const [attributes, signature] = signatureCbor;
+      if (!(signature instanceof Uint8Array)) {
+        return 'SIG_INVALID';
+      }
+      if ('ed25519PublicKey' in attributes) {
+        const publicKey = attributes['ed25519PublicKey'];
+        if (!(publicKey instanceof Uint8Array)) {
+          return 'SIG_INVALID';
+        }
+        signatures.push({
+          publicKey,
+          signature,
+          type: SignatureType.Ed25519,
+          valid: true,
+        });
+      } else if ('ecdsaP256SHA256PublicKey' in attributes) {
+        const publicKey = attributes['ecdsaP256SHA256PublicKey'];
+        if (!(publicKey instanceof Uint8Array)) {
+          return 'SIG_INVALID';
+        }
+        signatures.push({
+          publicKey,
+          signature,
+          type: SignatureType.EcdsaP256SHA256,
+          valid: true,
+        });
+      } else {
+        return 'SIG_UNSUPPORTED_KEY_TYPE';
+      }
+    }
+
+    return signatures;
+  }
+
   // See https://github.com/WICG/webpackage/blob/main/explainers/integrity-signature.md
-  private parseSignatureBlock(cbor: any[]): SignatureBlock | WebBundleError {
-    if (
-      cbor.length != 3 ||
-      cbor[0].length != 8 || // Magic bytes (already verified)
-      cbor[1].length != 4 || // Version
-      cbor[2].length != 1 || // Signature stack
-      cbor[2][0].length != 2 || // Attributes + signature
-      !(cbor[2][0][1] instanceof Uint8Array)
-    ) {
+  private parseIntegrityBlock(cbor: any[]): IntegrityBlock | WebBundleError {
+    if (cbor.length < 2 || cbor[0].length != 8) {
       return 'SIG_INVALID';
     }
     const version = new TextDecoder().decode(cbor[1]);
-    if (version != '1\0\0\0' && version != '1b\0\0') {
+    if (version === '1b\0\0') {
+      if (cbor.length != 3 || cbor[2].length != 1) {
+        return 'SIG_INVALID';
+      }
+      const signatures = this.parseSignatures(cbor[2]);
+      if (typeof signatures === 'string') {
+        return signatures;
+      }
+      return { signatures };
+    } else if (version === '2b\0\0') {
+      if (cbor.length != 4) {
+        return 'SIG_INVALID';
+      }
+      const attributes = this.parseAttributes(cbor[2]);
+      if (typeof attributes === 'string') {
+        return attributes;
+      }
+      const signatures = this.parseSignatures(cbor[3]);
+      if (typeof signatures === 'string') {
+        return signatures;
+      }
+      return { attributes, signatures };
+    } else {
       return 'SIG_UNKNOWN_VERSION';
     }
-    if (!('ed25519PublicKey' in cbor[2][0][0])) {
-      return 'SIG_UNSUPPORTED_KEY_TYPE';
-    }
-    return {
-      ed25519PublicKey: cbor[2][0][0]['ed25519PublicKey'],
-      signature: cbor[2][0][1],
-      valid: true, // TODO: validate signature
-    };
   }
 
   private createResourcesMap(bundle: Bundle): ResourceMap {
