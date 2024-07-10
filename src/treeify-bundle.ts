@@ -34,7 +34,7 @@ export function treeifyBundle(bundle: WebBundle) {
     }
   }
   const nodes = unmapTreeNode(mappedTree);
-  if (bundle.signatureBlock !== undefined) {
+  if (bundle.integrityBlock !== undefined) {
     nodes.unshift({
       id: INTEGRITY_BLOCK_ID,
       name: 'Integrity Block',

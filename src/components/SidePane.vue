@@ -1,7 +1,12 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 
-import { BundleReader, WebBundle, WebBundleError, bundleFileTypes } from '../BundleReader';
+import {
+  BundleReader,
+  WebBundle,
+  WebBundleError,
+  bundleFileTypes,
+} from '../BundleReader';
 import { treeifyBundle } from '../treeify-bundle';
 
 import DropTarget from './DropTarget.vue';
@@ -83,7 +88,9 @@ const bundleTree = computed(() => {
 <template>
   <h2 class="p-1 flex gap-1 items-stretch border-b border-divider">
     <label class="flex gap-1">
-      <span class="flex items-center px-1 rounded hover:bg-button-hover cursor-pointer">
+      <span
+        class="flex items-center px-1 rounded hover:bg-button-hover cursor-pointer"
+      >
         <SvgIcon class="inline w-4" type="folder_open"></SvgIcon>
       </span>
       <i v-if="bundle === undefined">Select a .wbn/.swbn file</i>
