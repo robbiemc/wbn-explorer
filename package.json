@@ -29,7 +29,7 @@
     "tw-colors": "^3.3.1",
     "typescript": "^5.0.2",
     "vite": "^4.5.3",
-    "vue-tsc": "^1.8.5"
+    "vue-tsc": "^2.1.6"
   },
   "prettier": {
     "tabWidth": 2,
